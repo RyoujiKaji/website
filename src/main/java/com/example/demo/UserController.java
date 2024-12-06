@@ -37,10 +37,59 @@ public class UserController {
         user.setPassword(password);
         user.setRole(role); 
         user.setImage(image); 
-        userRepository.save(user); 
-        return "Details got Saved"; 
+        if (checkUserForAdding(user) == true) { 
+          userRepository.save(user); 
+          return "Details got Saved";
+        }
+        else return "This email has already used";
     }
-  
+     /**
+      * проверяет наличие пользователя с таким email в бд
+      * @param new_user - пользователь, которого нужно проверить
+      * @return true - если пользователь не найден
+      */
+    private boolean checkUserForAdding(User new_user) {
+        Iterable <User> listOfAllusers = getAllUsers();
+        for (User user : listOfAllusers) {
+          if (new_user.getMail().equals(user.getMail())) return false;
+        }
+        return true;
+    }
+    
+    /**
+     * проверяет наличие пользователя с такими данными в бд
+     * @param new_user - пользователь, которого нужно проверить
+     * @return true - если пользователь найден
+     */
+    private boolean checkUserForEnter(User new_user) {
+      Iterable <User> listOfAllusers = getAllUsers();
+      for (User user : listOfAllusers) {
+        if (new_user.getMail().equals(user.getMail()) && new_user.getPassword().equals(user.getPassword())) return true;
+      }
+      return false;
+    }
+    
+    /**
+     * обрабатывает POST-запросы на вход в аккаунт
+     * @param mail - введенная почта
+     * @param password - введенный пароль
+     * @return true - пользователь с такими данными существует
+     */
+    @PostMapping(path="/enter")  
+    public @ResponseBody String enter(@RequestParam String mail, @RequestParam String password) { 
+      User user = new User(); 
+      user.setMail(mail); 
+      user.setPassword(password);
+      if (checkUserForEnter(user) == true) {  
+        return "OK";
+      }
+      else return "This user doesn't exist";
+    }
+
+    /**
+     * отвечает на GET-запрос "Покажи все строки бд"
+     * @return информацию, содержащуюся в бд
+     */
     @GetMapping(path="/users") 
     public @ResponseBody Iterable<User> getAllUsers() { 
         // This returns a JSON or XML with the Book 
