@@ -23,9 +23,9 @@ public class UserController {
     private UserRepository userRepository; 
   
     // Map ONLY POST Requests 
-    /*@PostMapping(path="/addbook")  
-    public @ResponseBody String addBooks (@RequestParam String bookName 
-            , @RequestParam String isbnNumber) { 
+    @PostMapping(path="/adduser")  
+    public @ResponseBody String addUsers (@RequestParam String mail, @RequestParam String password, @RequestParam String role,
+                                        @RequestParam String image) { 
         
         // @ResponseBody means the returned String 
           // is the response, not a view name 
@@ -33,12 +33,14 @@ public class UserController {
           // from the GET or POST request 
         
         User user = new User(); 
-        user.setBookName(bookName); 
-        user.setIsbnNumber(isbnNumber); 
+        user.setMail(mail); 
+        user.setPassword(password);
+        user.setRole(role); 
+        user.setImage(image); 
         userRepository.save(user); 
         return "Details got Saved"; 
-    } 
-  */
+    }
+  
     @GetMapping(path="/users") 
     public @ResponseBody Iterable<User> getAllUsers() { 
         // This returns a JSON or XML with the Book 

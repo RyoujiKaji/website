@@ -13,9 +13,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "login")
+    User() {};
+
+    User(int id, String password, String role, String image, String mail) {
+        this.id = id;
+        this.password = password;
+        this.role = role;
+        this.image = image;
+        this.mail = mail;
+    }
+    /*@Column(name = "login")
    // @Type(type = "text")
-    private String login;
+    private String login;*/
 
     @Column(name = "password")
    // @Type(type = "text")
@@ -37,10 +46,6 @@ public class User {
         return id; 
     }
 
-    public String getLogin() { 
-        return login; 
-    }
-
     public String getPassword() { 
         return password; 
     }
@@ -55,5 +60,25 @@ public class User {
 
     public String getMail() { 
         return mail; 
+    }
+
+    public void setMail(String _mail) {
+        this.mail = _mail;
+    }
+
+    public void setPassword(String _password) {
+        this.password = _password;
+    }
+
+    public void setRole(String _role) {
+        this.role = _role;
+    }
+
+    public void setImage(String _image) {
+        this.image = _image;
+    }
+
+    public void setId(Integer _id) {
+        this.id = _id;
     }
 }
