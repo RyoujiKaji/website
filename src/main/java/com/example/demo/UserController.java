@@ -23,8 +23,8 @@ public class UserController {
     private UserRepository userRepository; 
   
     // Map ONLY POST Requests 
-    @PostMapping(path="/adduser")  
-    public @ResponseBody String addUsers (@RequestParam String mail, @RequestParam String password, @RequestParam String role,
+    @PostMapping(path="/adduser", produces = "application/json")
+    public @ResponseBody User addUsers (@RequestParam String mail, @RequestParam String password, @RequestParam String role,
                                         @RequestParam String image) { 
         
         // @ResponseBody means the returned String 
@@ -39,9 +39,11 @@ public class UserController {
         user.setImage(image); 
         if (checkUserForAdding(user) == true) { 
           userRepository.save(user); 
-          return "Details got Saved";
+          return user;
+          //return "Details got Saved";
         }
-        else return "This email has already used";
+        return new User();
+        //else return "This email has already used";
     }
      /**
       * проверяет наличие пользователя с таким email в бд
@@ -59,31 +61,36 @@ public class UserController {
     /**
      * проверяет наличие пользователя с такими данными в бд
      * @param new_user - пользователь, которого нужно проверить
-     * @return true - если пользователь найден
+     * @return найденного пользователя или нового незаполненного пользователя
      */
-    private boolean checkUserForEnter(User new_user) {
+    private User checkUserForEnter(User new_user) {
       Iterable <User> listOfAllusers = getAllUsers();
       for (User user : listOfAllusers) {
-        if (new_user.getMail().equals(user.getMail()) && new_user.getPassword().equals(user.getPassword())) return true;
+        if (new_user.getMail().equals(user.getMail()) && new_user.getPassword().equals(user.getPassword())) {
+          return user;//return true;
+        }
       }
-      return false;
+      return new User();
+      //return false;
     }
     
     /**
      * обрабатывает POST-запросы на вход в аккаунт
      * @param mail - введенная почта
      * @param password - введенный пароль
-     * @return true - пользователь с такими данными существует
+     * @return найденного пользователя или нового незаполненного пользователя
      */
-    @PostMapping(path="/enter")  
-    public @ResponseBody String enter(@RequestParam String mail, @RequestParam String password) { 
+    @PostMapping(path="/enter", produces = "application/json")  
+    public @ResponseBody User enter(@RequestParam String mail, @RequestParam String password) { 
       User user = new User(); 
       user.setMail(mail); 
       user.setPassword(password);
-      if (checkUserForEnter(user) == true) {  
-        return "OK";
+      User us1 = checkUserForEnter(user);
+      if (us1.getMail() == null) {  
+        //return "OK";
+        return new User();
       }
-      else return "This user doesn't exist";
+      return us1;
     }
 
     /**
