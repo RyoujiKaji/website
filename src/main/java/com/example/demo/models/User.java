@@ -16,9 +16,9 @@ public class User {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
 
-    User() {};
+    public User() {};
 
-    User(int id, String password, String role, Blob image, String email, String name, String date) {
+    public User(int id, String password, String role, Blob image, String email, String name, String date) {
         this.id = id;
         this.password = password;
         this.role = role;

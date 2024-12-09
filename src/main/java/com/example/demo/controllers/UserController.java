@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.MediaType;
 
 import com.example.demo.models.User;
+import com.example.demo.models.UserId;
+import com.example.demo.models.UserPrivateInfo;
 import com.example.demo.models.UserEnter;
 import com.example.demo.models.UserEnterResponse;
 import com.example.demo.models.UserRegistrationResponse;
@@ -106,7 +108,7 @@ public class UserController {
   /**
    * обрабатывает попытку входа
    * 
-   * @param email - введенная почта пользователя
+   * @param email    - введенная почта пользователя
    * @param password - введенный пароль пользователя
    * @return Объект с результатом обработки
    */
@@ -120,12 +122,12 @@ public class UserController {
     // Если пользователь с такой почтой есть
     Optional<User> userOpt = getUserById(userId);
     try {
-      if(userOpt.isEmpty()){
+      if (userOpt.isEmpty()) {
         throw new Exception("No users with this id");
       }
       User user = userOpt.get();
-      //Если введен неверный пароль
-      if(!(password.equals(user.getPassword()))){
+      // Если введен неверный пароль
+      if (!(password.equals(user.getPassword()))) {
         response.setSuccess(false);
         return response;
       }
@@ -151,12 +153,12 @@ public class UserController {
   public @ResponseBody ResponseEntity<String> enter(@RequestBody UserEnter userInput) {
     UserEnterResponse response = checkUserForEnter(userInput.getEmail(), userInput.getPassword());
 
-    try{
-    String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
-    return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(jsonResponse);
-    }catch (Exception ex){
+    try {
+      String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
       System.out.println(ex.getMessage());
       return ResponseEntity.ok(null);
     }
@@ -165,24 +167,37 @@ public class UserController {
   @PostMapping(path = "/registration", produces = "application/json")
   public @ResponseBody ResponseEntity<String> registration(@RequestBody User userInput) {
     UserRegistrationResponse response = checkUserForRegistration(userInput);
-    try{
-    String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
-    return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(jsonResponse);
-    }catch (Exception ex){
+    try {
+      String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
       System.out.println(ex.getMessage());
       return ResponseEntity.ok(null);
     }
   }
 
-  
+  @PostMapping(path = "/privateinfo", produces = "application/json")
+  public @ResponseBody ResponseEntity<String> privateinfo(@RequestBody UserId userInput) {
+    try {
+      UserPrivateInfo response = getUserInfo(userInput.getId());
+      String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return ResponseEntity.ok(null);
+    }
+  }
+
   private UserRegistrationResponse checkUserForRegistration(User user) {
     UserRegistrationResponse response = new UserRegistrationResponse();
     int userId = checkUserExistence(user.getEmail());
     if (userId > 0) { // такой пользователь есть
       response.setSuccess(false);
-      response.setError(Integer.toString(userId));
+      response.setError("Пользователь с такой почтой уже зарегистрирован");
       return response;
     }
     // Если пользователя с такой почтой нет
@@ -194,6 +209,24 @@ public class UserController {
       System.out.println(err.getMessage());
       response.setSuccess(false);
       response.setError(err.getMessage());
+      return response;
+    }
+  }
+
+  private UserPrivateInfo getUserInfo(int id) throws Exception{
+    UserPrivateInfo response = new UserPrivateInfo();
+    Optional<User> userOpt = getUserById(id);
+    try {
+      if (userOpt.isEmpty()) {
+        throw new Exception("No users with this id");
+      }
+      User user = userOpt.get();
+      response.setName(user.getName());
+      response.setDate(user.getDate());
+      response.setEmail(user.getEmail());
+      return response;
+    } catch (Exception err) {
+      System.out.println(err.getMessage());
       return response;
     }
   }
