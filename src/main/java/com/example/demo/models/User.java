@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.models;
 
 import java.sql.Blob;
 
@@ -17,12 +17,12 @@ public class User {
 
     User() {};
 
-    User(int id, String password, String role, Blob image, String mail, String name, String date) {
+    User(int id, String password, String role, Blob image, String email, String name, String date) {
         this.id = id;
         this.password = password;
         this.role = role;
         this.image = image;
-        this.mail = mail;
+        this.email = email;
         this.name=name;
         this.date=date;
     }
@@ -50,9 +50,9 @@ public class User {
    // @Type(type = "text")
     private Blob image;
 
-    @Column(name = "mail")
+    @Column(name = "email")
    // @Type(type = "text")
-    private String mail;
+    private String email;
 
     public Integer getId() { 
         return id; 
@@ -78,12 +78,12 @@ public class User {
         return date; 
     }
 
-    public String getMail() { 
-        return mail; 
+    public String getEmail() { 
+        return email; 
     }
 
-    public void setMail(String _mail) {
-        this.mail = _mail;
+    public void setEmail(String _mail) {
+        this.email = _mail;
     }
 
     public void setPassword(String _password) {
