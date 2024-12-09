@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import com.example.demo.models.User;
 import com.example.demo.models.UserEnter;
 import com.example.demo.models.UserEnterResponse;
+import com.example.demo.models.UserRegistrationResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -46,7 +47,7 @@ public class UserController {
   }
 
   @PostMapping
-  public User createStudent(@RequestBody User user) {
+  public User createUser(@RequestBody User user) {
     return userService.createUser(user);
   }
 
@@ -103,10 +104,11 @@ public class UserController {
   }
 
   /**
-   * проверяет наличие пользователя с такими данными в бд
+   * обрабатывает попытку входа
    * 
-   * @param new_user - пользователь, которого нужно проверить
-   * @return найденного пользователя или нового незаполненного пользователя
+   * @param email - введенная почта пользователя
+   * @param password - введенный пароль пользователя
+   * @return Объект с результатом обработки
    */
   private UserEnterResponse checkUserForEnter(String email, String password) {
     UserEnterResponse response = new UserEnterResponse();
@@ -143,13 +145,10 @@ public class UserController {
    * 
    * @param email    - введенная почта
    * @param password - введенный пароль
-   * @return найденного пользователя или нового незаполненного пользователя
+   * @return json объект с результатом обработки запроса
    */
   @PostMapping(path = "/enter", produces = "application/json")
   public @ResponseBody ResponseEntity<String> enter(@RequestBody UserEnter userInput) {
-    
-    //System.out.println(checkUserForEnter(userInput.getEmail(), userInput.getPassword()).getSuccess());
-    //return checkUserForEnter(userInput.getEmail(), userInput.getPassword());
     UserEnterResponse response = checkUserForEnter(userInput.getEmail(), userInput.getPassword());
 
     try{
@@ -163,28 +162,39 @@ public class UserController {
     }
   }
 
-  /*
-   * /**
-   * обрабатывает POST-запросы на вход в аккаунт
-   * 
-   * @param mail - введенная почта
-   * 
-   * @param password - введенный пароль
-   * 
-   * @return найденного пользователя или нового незаполненного пользователя
-   * 
-   * @PostMapping(path = "/enter", produces = "application/json")
-   * public @ResponseBody User enter(@RequestParam String mail, @RequestParam
-   * String password) {
-   * User user = new User();
-   * user.setMail(mail);
-   * user.setPassword(password);
-   * User us1 = checkUserForEnter(user);
-   * if (us1.getMail() == null) {
-   * // return "OK";
-   * return new User();
-   * }
-   * return us1;
-   * }
-   */
+  @PostMapping(path = "/registration", produces = "application/json")
+  public @ResponseBody ResponseEntity<String> registration(@RequestBody User userInput) {
+    UserRegistrationResponse response = checkUserForRegistration(userInput);
+    try{
+    String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+    return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(jsonResponse);
+    }catch (Exception ex){
+      System.out.println(ex.getMessage());
+      return ResponseEntity.ok(null);
+    }
+  }
+
+  
+  private UserRegistrationResponse checkUserForRegistration(User user) {
+    UserRegistrationResponse response = new UserRegistrationResponse();
+    int userId = checkUserExistence(user.getEmail());
+    if (userId > 0) { // такой пользователь есть
+      response.setSuccess(false);
+      response.setError(Integer.toString(userId));
+      return response;
+    }
+    // Если пользователя с такой почтой нет
+    try {
+      createUser(user);
+      response.setSuccess(true);
+      return response;
+    } catch (Exception err) {
+      System.out.println(err.getMessage());
+      response.setSuccess(false);
+      response.setError(err.getMessage());
+      return response;
+    }
+  }
 }
