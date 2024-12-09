@@ -1,4 +1,6 @@
-package com.example.demo;
+package com.example.demo.models;
+
+import java.sql.Blob;
 
 import javax.persistence.*;
 
@@ -15,12 +17,14 @@ public class User {
 
     User() {};
 
-    User(int id, String password, String role, String image, String mail) {
+    User(int id, String password, String role, Blob image, String email, String name, String date) {
         this.id = id;
         this.password = password;
         this.role = role;
         this.image = image;
-        this.mail = mail;
+        this.email = email;
+        this.name=name;
+        this.date=date;
     }
     /*@Column(name = "login")
    // @Type(type = "text")
@@ -30,17 +34,25 @@ public class User {
    // @Type(type = "text")
     private String password;
 
+    @Column(name = "name")
+   // @Type(type = "text")
+    private String name;
+
+    @Column(name = "date")
+   // @Type(type = "text")
+    private String date;
+
     @Column(name = "role")
    // @Type(type = "text")
     private String role;
 
     @Column(name = "image")
    // @Type(type = "text")
-    private String image;
+    private Blob image;
 
-    @Column(name = "mail")
+    @Column(name = "email")
    // @Type(type = "text")
-    private String mail;
+    private String email;
 
     public Integer getId() { 
         return id; 
@@ -54,16 +66,24 @@ public class User {
         return role; 
     }
 
-    public String getImage() { 
+    public Blob getImage() { 
         return image; 
     }
 
-    public String getMail() { 
-        return mail; 
+    public String getName() { 
+        return name; 
     }
 
-    public void setMail(String _mail) {
-        this.mail = _mail;
+    public String getDate() { 
+        return date; 
+    }
+
+    public String getEmail() { 
+        return email; 
+    }
+
+    public void setEmail(String _mail) {
+        this.email = _mail;
     }
 
     public void setPassword(String _password) {
@@ -74,7 +94,15 @@ public class User {
         this.role = _role;
     }
 
-    public void setImage(String _image) {
+    public void setName(String _name) {
+        this.role = _name;
+    }
+
+    public void setDate(String _date) {
+        this.role = _date;
+    }
+
+    public void setImage(Blob _image) {
         this.image = _image;
     }
 
