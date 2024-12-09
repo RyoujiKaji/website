@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import java.sql.Blob;
+
 import javax.persistence.*;
 
 import org.hibernate.annotations.Type;
@@ -15,12 +17,14 @@ public class User {
 
     User() {};
 
-    User(int id, String password, String role, String image, String mail) {
+    User(int id, String password, String role, Blob image, String mail, String name, String date) {
         this.id = id;
         this.password = password;
         this.role = role;
         this.image = image;
         this.mail = mail;
+        this.name=name;
+        this.date=date;
     }
     /*@Column(name = "login")
    // @Type(type = "text")
@@ -30,13 +34,21 @@ public class User {
    // @Type(type = "text")
     private String password;
 
+    @Column(name = "name")
+   // @Type(type = "text")
+    private String name;
+
+    @Column(name = "date")
+   // @Type(type = "text")
+    private String date;
+
     @Column(name = "role")
    // @Type(type = "text")
     private String role;
 
     @Column(name = "image")
    // @Type(type = "text")
-    private String image;
+    private Blob image;
 
     @Column(name = "mail")
    // @Type(type = "text")
@@ -54,8 +66,16 @@ public class User {
         return role; 
     }
 
-    public String getImage() { 
+    public Blob getImage() { 
         return image; 
+    }
+
+    public String getName() { 
+        return name; 
+    }
+
+    public String getDate() { 
+        return date; 
     }
 
     public String getMail() { 
@@ -74,7 +94,15 @@ public class User {
         this.role = _role;
     }
 
-    public void setImage(String _image) {
+    public void setName(String _name) {
+        this.role = _name;
+    }
+
+    public void setDate(String _date) {
+        this.role = _date;
+    }
+
+    public void setImage(Blob _image) {
         this.image = _image;
     }
 

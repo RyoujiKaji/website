@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import java.sql.Blob;
+
 import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Controller; 
 import org.springframework.web.bind.annotation.GetMapping; 
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller    
   
 // This means URL's start with /geek (after Application path) 
-@RequestMapping(path="/db")  
+@RequestMapping(path="/api")  
 public class UserController { 
     
     // This means to get the bean called geekuserRepository 
@@ -25,7 +27,7 @@ public class UserController {
     // Map ONLY POST Requests 
     @PostMapping(path="/adduser", produces = "application/json")
     public @ResponseBody User addUsers (@RequestParam String mail, @RequestParam String password, @RequestParam String role,
-                                        @RequestParam String image) { 
+                                        @RequestParam Blob image) { 
         
         // @ResponseBody means the returned String 
           // is the response, not a view name 
