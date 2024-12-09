@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 
 import com.example.demo.models.User;
 import com.example.demo.models.UserId;
+import com.example.demo.models.UserModifierPrivateInfo;
 import com.example.demo.models.UserPrivateInfo;
 import com.example.demo.models.UserEnter;
 import com.example.demo.models.UserEnterResponse;
@@ -178,6 +179,20 @@ public class UserController {
     }
   }
 
+  @PostMapping(path = "/fixprivateinfo", produces = "application/json")
+  public @ResponseBody ResponseEntity<String> fixprivateinfo(@RequestBody UserModifierPrivateInfo userInput) {
+    try {
+      UserRegistrationResponse response = setUserInfo(userInput);
+      String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return ResponseEntity.ok(null);
+    }
+  }
+
   @PostMapping(path = "/privateinfo", produces = "application/json")
   public @ResponseBody ResponseEntity<String> privateinfo(@RequestBody UserId userInput) {
     try {
@@ -213,7 +228,7 @@ public class UserController {
     }
   }
 
-  private UserPrivateInfo getUserInfo(int id) throws Exception{
+  private UserPrivateInfo getUserInfo(int id) throws Exception {
     UserPrivateInfo response = new UserPrivateInfo();
     Optional<User> userOpt = getUserById(id);
     try {
@@ -224,6 +239,33 @@ public class UserController {
       response.setName(user.getName());
       response.setDate(user.getDate());
       response.setEmail(user.getEmail());
+      return response;
+    } catch (Exception err) {
+      System.out.println(err.getMessage());
+      return response;
+    }
+  }
+
+  private UserRegistrationResponse setUserInfo(UserModifierPrivateInfo newInf) {
+    UserRegistrationResponse response = new UserRegistrationResponse();
+    Optional<User> userOpt = getUserById(newInf.getId());
+    try {
+      if (userOpt.isEmpty()) {
+        response.setSuccess(false);
+        response.setError("No users with this id");
+      }
+      User user = userOpt.get();
+      if(!(user.getName().equals(newInf.getName()))){
+        user.setName(newInf.getName());
+      }
+      if(!(user.getDate().equals(newInf.getDate()))){
+        user.setDate(newInf.getDate());
+      }
+      if(!(user.getEmail().equals(newInf.getEmail()))){
+        user.setEmail(newInf.getEmail());
+      }
+      createUser(user);
+      response.setSuccess(true);
       return response;
     } catch (Exception err) {
       System.out.println(err.getMessage());
