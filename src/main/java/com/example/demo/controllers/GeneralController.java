@@ -3,10 +3,12 @@ package com.example.demo.controllers;
 import java.net.http.HttpHeaders;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Date;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -49,6 +51,11 @@ public class GeneralController {
     return generalService.getVisitsById(id);
   }
 
+  @PostMapping
+  public General upDateVisits(@RequestBody General general) {
+    return generalService.updateVisits(general);
+  }
+
   /**
    * обрабатывает POST-запросы на вход в аккаунт
    * 
@@ -71,15 +78,55 @@ public class GeneralController {
     }
   }
 
-  private Footer getFooter(){
+@PostMapping(path = "/update")
+  public @ResponseBody ResponseEntity<String> update() {
+    UserRegistrationResponse response = processUpdate();
+    try {
+      String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return ResponseEntity.ok(null);
+    }
+  }
+
+  private UserRegistrationResponse processUpdate(){
+    UserRegistrationResponse response = new UserRegistrationResponse();
+    response.setSuccess(false);
+    response.setError("Ошибка запроса");
+    try {
+      Optional<General> generalOptional = getVisitsById(1);
+      if (generalOptional.isEmpty()) {
+        return response;
+      }
+      General gen = generalOptional.get();
+      int vis = gen.getVisits();
+      vis+=1;
+      gen.setVisits(vis);
+      upDateVisits(gen);
+      response.setSuccess(true);
+      return response;
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return response;
+    }
+  }
+
+  private Footer getFooter() {
     Footer response = new Footer();
 
-    String LD_PATTERN = "yyyy-MM-dd";
-    DateTimeFormatter LD_FORMATTER= DateTimeFormatter.ofPattern(LD_PATTERN);
-    String dateString = LD_FORMATTER.format(LocalDate.now());
+    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    Date date = new Date();
+    String dateString = sdf.format(date);
+
+    /* String LD_PATTERN = "dd.MM.yyyy";
+    DateTimeFormatter LD_FORMATTER = DateTimeFormatter.ofPattern(LD_PATTERN);
+    String dateString = LD_FORMATTER.format(LocalDate.now()); */
     response.setDate(dateString);
 
-    Optional <General> generalOptional = getVisitsById(1);
+    Optional<General> generalOptional = getVisitsById(1);
     try {
       if (generalOptional.isEmpty()) {
         response.setVisits(-1);

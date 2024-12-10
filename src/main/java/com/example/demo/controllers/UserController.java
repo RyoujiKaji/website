@@ -60,36 +60,6 @@ public class UserController {
     userService.deleteUser(id);
   }
 
-  // Map ONLY POST Requests
-  /*
-   * @PostMapping(path = "/adduser", produces = "application/json")
-   * public @ResponseBody User addUsers(@RequestParam String mail, @RequestParam
-   * String password,
-   * 
-   * @RequestParam String role,
-   * 
-   * @RequestParam Blob image) {
-   * 
-   * // @ResponseBody means the returned String
-   * // is the response, not a view name
-   * // @RequestParam means it is a parameter
-   * // from the GET or POST request
-   * 
-   * User user = new User();
-   * user.setMail(mail);
-   * user.setPassword(password);
-   * user.setRole(role);
-   * user.setImage(image);
-   * if (checkUserExistence(user) == true) {
-   * userRepository.save(user);
-   * return user;
-   * // return "Details got Saved";
-   * }
-   * return new User();
-   * // else return "This email has already used";
-   * }
-   */
-
   /**
    * проверяет наличие пользователя с таким email в бд и, при его наличии,
    * возвращает его id
@@ -154,7 +124,6 @@ public class UserController {
   @PostMapping(path = "/enter", produces = "application/json")
   public @ResponseBody ResponseEntity<String> enter(@RequestBody UserEnter userInput) {
     UserEnterResponse response = checkUserForEnter(userInput.getEmail(), userInput.getPassword());
-
     try {
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
       return ResponseEntity.ok()
@@ -223,10 +192,7 @@ public class UserController {
   }
 
   @PostMapping(path = "/fixavatar", produces = "application/json")
-  public ResponseEntity<String> fixavatar(@RequestParam("image") MultipartFile file,
-      @RequestParam("id") String id) {
-    // Проверка на наличие файла
-
+  public ResponseEntity<String> fixavatar(@RequestParam("image") MultipartFile file, @RequestParam("id") String id) {
     try {
       UserRegistrationResponse response = setAvatar(Integer.parseInt(id), file);
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
@@ -255,6 +221,7 @@ public class UserController {
       User user = userOpt.get();
       byte[] fileBytes = file.getBytes();
       Blob blob = new SerialBlob(fileBytes);
+      System.out.println(blob);
       user.setImage(blob);
       createUser(user);
       response.setSuccess(true);

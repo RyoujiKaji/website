@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.General;
+import com.example.demo.models.User;
 
 import java.util.Optional;
 
@@ -18,6 +19,10 @@ public class GeneralService {
 
     public Optional<General> getVisitsById(int id) {
         return generalRepository.findById(id);
+    }
+
+    public General updateVisits(General general) {
+        return generalRepository.save(general);
     }
 
    /*  public User createUser(User user) {
