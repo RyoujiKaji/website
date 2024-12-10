@@ -154,7 +154,6 @@ public class UserController {
   @PostMapping(path = "/enter", produces = "application/json")
   public @ResponseBody ResponseEntity<String> enter(@RequestBody UserEnter userInput) {
     UserEnterResponse response = checkUserForEnter(userInput.getEmail(), userInput.getPassword());
-
     try {
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
       return ResponseEntity.ok()
@@ -223,10 +222,7 @@ public class UserController {
   }
 
   @PostMapping(path = "/fixavatar", produces = "application/json")
-  public ResponseEntity<String> fixavatar(@RequestParam("image") MultipartFile file,
-      @RequestParam("id") String id) {
-    // Проверка на наличие файла
-
+  public ResponseEntity<String> fixavatar(@RequestParam("image") MultipartFile file, @RequestParam("id") String id) {
     try {
       UserRegistrationResponse response = setAvatar(Integer.parseInt(id), file);
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
@@ -255,6 +251,7 @@ public class UserController {
       User user = userOpt.get();
       byte[] fileBytes = file.getBytes();
       Blob blob = new SerialBlob(fileBytes);
+      System.out.println(blob);
       user.setImage(blob);
       createUser(user);
       response.setSuccess(true);
