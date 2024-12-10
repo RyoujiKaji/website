@@ -60,36 +60,6 @@ public class UserController {
     userService.deleteUser(id);
   }
 
-  // Map ONLY POST Requests
-  /*
-   * @PostMapping(path = "/adduser", produces = "application/json")
-   * public @ResponseBody User addUsers(@RequestParam String mail, @RequestParam
-   * String password,
-   * 
-   * @RequestParam String role,
-   * 
-   * @RequestParam Blob image) {
-   * 
-   * // @ResponseBody means the returned String
-   * // is the response, not a view name
-   * // @RequestParam means it is a parameter
-   * // from the GET or POST request
-   * 
-   * User user = new User();
-   * user.setMail(mail);
-   * user.setPassword(password);
-   * user.setRole(role);
-   * user.setImage(image);
-   * if (checkUserExistence(user) == true) {
-   * userRepository.save(user);
-   * return user;
-   * // return "Details got Saved";
-   * }
-   * return new User();
-   * // else return "This email has already used";
-   * }
-   */
-
   /**
    * проверяет наличие пользователя с таким email в бд и, при его наличии,
    * возвращает его id
