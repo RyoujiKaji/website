@@ -12,12 +12,13 @@ public class User {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
 
-    User() {};
+    public User() {};
 
-    User(int id, String password, String role, Blob image, String email, String name, String date) {
+    public User(int id, String password, String role, Blob image, String email, String name, String date) {
         this.id = id;
         this.password = password;
         this.role = role;
@@ -95,11 +96,11 @@ public class User {
     }
 
     public void setName(String _name) {
-        this.role = _name;
+        this.name = _name;
     }
 
     public void setDate(String _date) {
-        this.role = _date;
+        this.date = _date;
     }
 
     public void setImage(Blob _image) {
