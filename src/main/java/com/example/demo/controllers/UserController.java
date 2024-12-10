@@ -6,19 +6,14 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.rowset.serial.SerialBlob;
+
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Optionals;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -30,6 +25,8 @@ import com.example.demo.models.UserEnter;
 import com.example.demo.models.UserEnterResponse;
 import com.example.demo.models.UserRegistrationResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 
@@ -215,13 +212,56 @@ public class UserController {
   public ResponseEntity<byte[]> avatar(@RequestBody UserId userInput) {
     try {
       byte[] image = getAvatar(userInput.getId());
-      if (image==null) {
+      if (image == null) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
       }
       return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
     } catch (Exception ex) {
       System.out.println(ex.getMessage());
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+  }
+
+  @PostMapping(path = "/fixavatar", produces = "application/json")
+  public ResponseEntity<String> fixavatar(@RequestParam("image") MultipartFile file,
+      @RequestParam("id") String id) {
+    // Проверка на наличие файла
+
+    try {
+      UserRegistrationResponse response = setAvatar(Integer.parseInt(id), file);
+      String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+  }
+
+  private UserRegistrationResponse setAvatar(int id, MultipartFile file) {
+    UserRegistrationResponse response = new UserRegistrationResponse();
+    if (file.isEmpty()) {
+      response.setSuccess(false);
+      response.setError("Файл не должен быть пустым");
+      return response;
+    }
+    Optional<User> userOpt = getUserById(id);
+    try {
+      if (userOpt.isEmpty()) {
+        response.setSuccess(false);
+        response.setError("No users with this id");
+      }
+      User user = userOpt.get();
+      byte[] fileBytes = file.getBytes();
+      Blob blob = new SerialBlob(fileBytes);
+      user.setImage(blob);
+      createUser(user);
+      response.setSuccess(true);
+      return response;
+    } catch (Exception err) {
+      System.out.println(err.getMessage());
+      return response;
     }
   }
 
@@ -241,13 +281,12 @@ public class UserController {
     }
   }
 
-private byte[] blobToByteArray(Blob blob) throws SQLException {
+  private byte[] blobToByteArray(Blob blob) throws SQLException {
     if (blob == null) {
-        return null; // Обработка случая, когда blob равен null
+      return null; // Обработка случая, когда blob равен null
     }
     return blob.getBytes(1, (int) blob.length());
-}
-
+  }
 
   private UserRegistrationResponse checkUserForRegistration(User user) {
     UserRegistrationResponse response = new UserRegistrationResponse();
