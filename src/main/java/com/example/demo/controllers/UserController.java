@@ -1,9 +1,12 @@
 package com.example.demo.controllers;
 
+import java.net.http.HttpHeaders;
 import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Optionals;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.example.demo.models.User;
@@ -207,6 +211,44 @@ public class UserController {
     }
   }
 
+  @PostMapping("/avatar")
+  public ResponseEntity<byte[]> avatar(@RequestBody UserId userInput) {
+    try {
+      byte[] image = getAvatar(userInput.getId());
+      if (image==null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+      }
+      return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+  }
+
+  private byte[] getAvatar(int id) {
+    byte[] response = null;
+    Optional<User> userOpt = getUserById(id);
+    try {
+      if (userOpt.isEmpty()) {
+        throw new Exception("No users with this id");
+      }
+      User user = userOpt.get();
+      response = blobToByteArray(user.getImage());
+      return response;
+    } catch (Exception err) {
+      System.out.println(err.getMessage());
+      return response;
+    }
+  }
+
+private byte[] blobToByteArray(Blob blob) throws SQLException {
+    if (blob == null) {
+        return null; // Обработка случая, когда blob равен null
+    }
+    return blob.getBytes(1, (int) blob.length());
+}
+
+
   private UserRegistrationResponse checkUserForRegistration(User user) {
     UserRegistrationResponse response = new UserRegistrationResponse();
     int userId = checkUserExistence(user.getEmail());
@@ -255,13 +297,13 @@ public class UserController {
         response.setError("No users with this id");
       }
       User user = userOpt.get();
-      if(!(user.getName().equals(newInf.getName()))){
+      if (!(user.getName().equals(newInf.getName()))) {
         user.setName(newInf.getName());
       }
-      if(!(user.getDate().equals(newInf.getDate()))){
+      if (!(user.getDate().equals(newInf.getDate()))) {
         user.setDate(newInf.getDate());
       }
-      if(!(user.getEmail().equals(newInf.getEmail()))){
+      if (!(user.getEmail().equals(newInf.getEmail()))) {
         user.setEmail(newInf.getEmail());
       }
       createUser(user);
