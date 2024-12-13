@@ -4,6 +4,7 @@ import java.net.http.HttpHeaders;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -19,11 +20,13 @@ import org.springframework.http.MediaType;
 
 import com.example.demo.models.User;
 import com.example.demo.models.UserId;
+import com.example.demo.models.UserInfWihoutImg;
 import com.example.demo.models.UserModifierPrivateInfo;
 import com.example.demo.models.UserPrivateInfo;
 import com.example.demo.models.UserEnter;
 import com.example.demo.models.UserEnterResponse;
 import com.example.demo.models.UserRegistrationResponse;
+import com.example.demo.models.UserRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -135,6 +138,29 @@ public class UserController {
     }
   }
 
+  private List<UserInfWihoutImg> getAllUsersWithoutImg(){
+    List<User> users = getAllUsers();
+    List<UserInfWihoutImg> response= new LinkedList<UserInfWihoutImg>();
+    for (User user : users) {
+      response.add(new UserInfWihoutImg(user.getId(), user.getName(), user.getDate(), user.getEmail(), user.getRole()));
+    }
+    return response;
+  }
+
+  @PostMapping(path = "/allUserswithoutImg", produces = "application/json")
+  public @ResponseBody ResponseEntity<String> allUserswithoutImg() {
+    List<UserInfWihoutImg> UsersList = getAllUsersWithoutImg();
+    try {
+      String jsonResponse = new ObjectMapper().writeValueAsString(UsersList); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return ResponseEntity.ok(null);
+    }
+  }
+
   @PostMapping(path = "/registration", produces = "application/json")
   public @ResponseBody ResponseEntity<String> registration(@RequestBody User userInput) {
     UserRegistrationResponse response = checkUserForRegistration(userInput);
@@ -153,6 +179,20 @@ public class UserController {
   public @ResponseBody ResponseEntity<String> fixprivateinfo(@RequestBody UserModifierPrivateInfo userInput) {
     try {
       UserRegistrationResponse response = setUserInfo(userInput);
+      String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return ResponseEntity.ok(null);
+    }
+  }
+
+  @PostMapping(path = "/fixrole", produces = "application/json")
+  public @ResponseBody ResponseEntity<String> fixrole(@RequestBody UserRole userInput) {
+    try {
+      UserRegistrationResponse response = setUserRole(userInput);
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
       return ResponseEntity.ok()
           .contentType(MediaType.APPLICATION_JSON)
@@ -312,6 +352,25 @@ public class UserController {
       if (!(user.getEmail().equals(newInf.getEmail()))) {
         user.setEmail(newInf.getEmail());
       }
+      createUser(user);
+      response.setSuccess(true);
+      return response;
+    } catch (Exception err) {
+      System.out.println(err.getMessage());
+      return response;
+    }
+  }
+
+  private UserRegistrationResponse setUserRole(UserRole newInf) {
+    UserRegistrationResponse response = new UserRegistrationResponse();
+    Optional<User> userOpt = getUserById(newInf.getId());
+    try {
+      if (userOpt.isEmpty()) {
+        response.setSuccess(false);
+        response.setError("No users with this id");
+      }
+      User user = userOpt.get();
+      user.setRole(newInf.getRole());
       createUser(user);
       response.setSuccess(true);
       return response;
