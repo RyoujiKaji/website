@@ -26,6 +26,7 @@ import com.example.demo.models.UserPrivateInfo;
 import com.example.demo.models.UserEnter;
 import com.example.demo.models.UserEnterResponse;
 import com.example.demo.models.UserRegistrationResponse;
+import com.example.demo.models.UserRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -188,6 +189,20 @@ public class UserController {
     }
   }
 
+  @PostMapping(path = "/fixrole", produces = "application/json")
+  public @ResponseBody ResponseEntity<String> fixrole(@RequestBody UserRole userInput) {
+    try {
+      UserRegistrationResponse response = setUserRole(userInput);
+      String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(jsonResponse);
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+      return ResponseEntity.ok(null);
+    }
+  }
+
   @PostMapping(path = "/privateinfo", produces = "application/json")
   public @ResponseBody ResponseEntity<String> privateinfo(@RequestBody UserId userInput) {
     try {
@@ -337,6 +352,25 @@ public class UserController {
       if (!(user.getEmail().equals(newInf.getEmail()))) {
         user.setEmail(newInf.getEmail());
       }
+      createUser(user);
+      response.setSuccess(true);
+      return response;
+    } catch (Exception err) {
+      System.out.println(err.getMessage());
+      return response;
+    }
+  }
+
+  private UserRegistrationResponse setUserRole(UserRole newInf) {
+    UserRegistrationResponse response = new UserRegistrationResponse();
+    Optional<User> userOpt = getUserById(newInf.getId());
+    try {
+      if (userOpt.isEmpty()) {
+        response.setSuccess(false);
+        response.setError("No users with this id");
+      }
+      User user = userOpt.get();
+      user.setRole(newInf.getRole());
       createUser(user);
       response.setSuccess(true);
       return response;
