@@ -138,11 +138,28 @@ public class UserController {
     }
   }
 
-  private List<UserInfWihoutImg> getAllUsersWithoutImg(){
+  private List<UserInfWihoutImg> getAllUsersWithoutImg() {
     List<User> users = getAllUsers();
-    List<UserInfWihoutImg> response= new LinkedList<UserInfWihoutImg>();
+    List<UserInfWihoutImg> response = new LinkedList<UserInfWihoutImg>();
     for (User user : users) {
-      response.add(new UserInfWihoutImg(user.getId(), user.getName(), user.getDate(), user.getEmail(), user.getRole()));
+      String ruRole="";
+      switch (user.getRole()) {
+        case "user": {
+          ruRole = "Пользователь";
+          break;
+        }
+        case "moder": {
+          ruRole = "Модератор";
+          break;
+        }
+        case "admin": {
+          ruRole = "Администратор";
+          break;
+        }
+        default:
+          break;
+      }
+      response.add(new UserInfWihoutImg(user.getId(), user.getName(), user.getDate(), user.getEmail(), ruRole));
     }
     return response;
   }
