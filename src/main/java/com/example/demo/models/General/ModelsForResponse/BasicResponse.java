@@ -1,12 +1,12 @@
-package com.example.demo.models;
+package com.example.demo.models.General.ModelsForResponse;
 
-public class UserRegistrationResponse {
+public class BasicResponse {
     private String error;
     private boolean success;
 
-    public UserRegistrationResponse(){}
+    public BasicResponse(){}
 
-    public UserRegistrationResponse(String error, boolean success){
+    public BasicResponse(String error, boolean success){
         this.error=error;
         this.success=success;
     }

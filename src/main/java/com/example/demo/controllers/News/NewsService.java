@@ -1,8 +1,8 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.News;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.models.News;
+import com.example.demo.models.News.News;
 
 import java.util.List;
 import java.util.Optional;

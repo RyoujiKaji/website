@@ -1,9 +1,9 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.General;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.models.General;
-import com.example.demo.models.User;
+import com.example.demo.models.General.General;
+import com.example.demo.models.Users.User;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.example.demo.models;
+package com.example.demo.models.General.ModelsForResponse;
 
 public class Footer {
     private int visits;

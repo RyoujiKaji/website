@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.General;
 
 import java.net.http.HttpHeaders;
 import java.sql.Blob;
@@ -21,15 +21,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import com.example.demo.models.Footer;
-import com.example.demo.models.General;
-import com.example.demo.models.User;
-import com.example.demo.models.UserId;
-import com.example.demo.models.UserModifierPrivateInfo;
-import com.example.demo.models.UserPrivateInfo;
-import com.example.demo.models.UserEnter;
-import com.example.demo.models.UserEnterResponse;
-import com.example.demo.models.UserRegistrationResponse;
+import com.example.demo.models.General.General;
+import com.example.demo.models.General.ModelsForResponse.BasicResponse;
+import com.example.demo.models.General.ModelsForResponse.Footer;
+import com.example.demo.models.Users.User;
+import com.example.demo.models.Users.ModelsForRequest.UserEnter;
+import com.example.demo.models.Users.ModelsForRequest.UserId;
+import com.example.demo.models.Users.ModelsForRequest.UserModifierPrivateInfo;
+import com.example.demo.models.Users.ModelsForResponse.UserEnterResponse;
+import com.example.demo.models.Users.ModelsForResponse.UserPrivateInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,7 +80,7 @@ public class GeneralController {
 
 @PostMapping(path = "/update")
   public @ResponseBody ResponseEntity<String> update() {
-    UserRegistrationResponse response = processUpdate();
+    BasicResponse response = processUpdate();
     try {
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
       return ResponseEntity.ok()
@@ -92,8 +92,8 @@ public class GeneralController {
     }
   }
 
-  private UserRegistrationResponse processUpdate(){
-    UserRegistrationResponse response = new UserRegistrationResponse();
+  private BasicResponse processUpdate(){
+    BasicResponse response = new BasicResponse();
     response.setSuccess(false);
     response.setError("Ошибка запроса");
     try {

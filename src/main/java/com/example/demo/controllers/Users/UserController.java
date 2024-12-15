@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.Users;
 
 import java.net.http.HttpHeaders;
 import java.sql.Blob;
@@ -18,15 +18,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import com.example.demo.models.User;
-import com.example.demo.models.UserId;
-import com.example.demo.models.UserInfWihoutImg;
-import com.example.demo.models.UserModifierPrivateInfo;
-import com.example.demo.models.UserPrivateInfo;
-import com.example.demo.models.UserEnter;
-import com.example.demo.models.UserEnterResponse;
-import com.example.demo.models.UserRegistrationResponse;
-import com.example.demo.models.UserRole;
+import com.example.demo.models.General.ModelsForResponse.BasicResponse;
+import com.example.demo.models.Users.User;
+import com.example.demo.models.Users.ModelsForRequest.UserEnter;
+import com.example.demo.models.Users.ModelsForRequest.UserId;
+import com.example.demo.models.Users.ModelsForRequest.UserModifierPrivateInfo;
+import com.example.demo.models.Users.ModelsForRequest.UserRole;
+import com.example.demo.models.Users.ModelsForResponse.UserEnterResponse;
+import com.example.demo.models.Users.ModelsForResponse.UserInfWihoutImg;
+import com.example.demo.models.Users.ModelsForResponse.UserPrivateInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -163,7 +163,7 @@ public class UserController {
 
   @PostMapping(path = "/registration", produces = "application/json")
   public @ResponseBody ResponseEntity<String> registration(@RequestBody User userInput) {
-    UserRegistrationResponse response = checkUserForRegistration(userInput);
+    BasicResponse response = checkUserForRegistration(userInput);
     try {
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
       return ResponseEntity.ok()
@@ -178,7 +178,7 @@ public class UserController {
   @PostMapping(path = "/fixprivateinfo", produces = "application/json")
   public @ResponseBody ResponseEntity<String> fixprivateinfo(@RequestBody UserModifierPrivateInfo userInput) {
     try {
-      UserRegistrationResponse response = setUserInfo(userInput);
+      BasicResponse response = setUserInfo(userInput);
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
       return ResponseEntity.ok()
           .contentType(MediaType.APPLICATION_JSON)
@@ -192,7 +192,7 @@ public class UserController {
   @PostMapping(path = "/fixrole", produces = "application/json")
   public @ResponseBody ResponseEntity<String> fixrole(@RequestBody UserRole userInput) {
     try {
-      UserRegistrationResponse response = setUserRole(userInput);
+      BasicResponse response = setUserRole(userInput);
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
       return ResponseEntity.ok()
           .contentType(MediaType.APPLICATION_JSON)
@@ -234,7 +234,7 @@ public class UserController {
   @PostMapping(path = "/fixavatar", produces = "application/json")
   public ResponseEntity<String> fixavatar(@RequestParam("image") MultipartFile file, @RequestParam("id") String id) {
     try {
-      UserRegistrationResponse response = setAvatar(Integer.parseInt(id), file);
+      BasicResponse response = setAvatar(Integer.parseInt(id), file);
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
       return ResponseEntity.ok()
           .contentType(MediaType.APPLICATION_JSON)
@@ -245,8 +245,8 @@ public class UserController {
     }
   }
 
-  private UserRegistrationResponse setAvatar(int id, MultipartFile file) {
-    UserRegistrationResponse response = new UserRegistrationResponse();
+  private BasicResponse setAvatar(int id, MultipartFile file) {
+    BasicResponse response = new BasicResponse();
     if (file.isEmpty()) {
       response.setSuccess(false);
       response.setError("Файл не должен быть пустым");
@@ -295,8 +295,8 @@ public class UserController {
     return blob.getBytes(1, (int) blob.length());
   }
 
-  private UserRegistrationResponse checkUserForRegistration(User user) {
-    UserRegistrationResponse response = new UserRegistrationResponse();
+  private BasicResponse checkUserForRegistration(User user) {
+    BasicResponse response = new BasicResponse();
     int userId = checkUserExistence(user.getEmail());
     if (userId > 0) { // такой пользователь есть
       response.setSuccess(false);
@@ -334,8 +334,8 @@ public class UserController {
     }
   }
 
-  private UserRegistrationResponse setUserInfo(UserModifierPrivateInfo newInf) {
-    UserRegistrationResponse response = new UserRegistrationResponse();
+  private BasicResponse setUserInfo(UserModifierPrivateInfo newInf) {
+    BasicResponse response = new BasicResponse();
     Optional<User> userOpt = getUserById(newInf.getId());
     try {
       if (userOpt.isEmpty()) {
@@ -361,8 +361,8 @@ public class UserController {
     }
   }
 
-  private UserRegistrationResponse setUserRole(UserRole newInf) {
-    UserRegistrationResponse response = new UserRegistrationResponse();
+  private BasicResponse setUserRole(UserRole newInf) {
+    BasicResponse response = new BasicResponse();
     Optional<User> userOpt = getUserById(newInf.getId());
     try {
       if (userOpt.isEmpty()) {
