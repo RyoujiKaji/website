@@ -1,4 +1,4 @@
-package com.example.demo.models.Users.ModelsForResponse;
+package com.example.demo.models.Users_folder.ModelsForResponse;
 
 public class UserPrivateInfo {
     private String name;

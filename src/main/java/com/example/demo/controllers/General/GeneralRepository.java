@@ -3,7 +3,7 @@ package com.example.demo.controllers.General;
 import org.springframework.data.jpa.repository.JpaRepository;
 //import org.springframework.data.repository.CrudRepository; 
 
-import com.example.demo.models.General.General;
+import com.example.demo.models.General_folder.General;
 
 //import org.springframework.data.jpa.repository.JpaRepository;
 

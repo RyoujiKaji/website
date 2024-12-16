@@ -1,4 +1,4 @@
-package com.example.demo.models.Users.ModelsForRequest;
+package com.example.demo.models.Users_folder.ModelsForRequest;
 
 public class UserId {
     private int id;

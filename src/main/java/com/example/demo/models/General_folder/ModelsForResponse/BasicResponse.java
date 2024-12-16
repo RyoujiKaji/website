@@ -1,4 +1,4 @@
-package com.example.demo.models.General.ModelsForResponse;
+package com.example.demo.models.General_folder.ModelsForResponse;
 
 public class BasicResponse {
     private String error;

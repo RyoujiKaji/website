@@ -18,8 +18,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import com.example.demo.models.News.News;
-import com.example.demo.models.Users.User;
+import com.example.demo.models.News_folder.News;
+import com.example.demo.models.Users_folder.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

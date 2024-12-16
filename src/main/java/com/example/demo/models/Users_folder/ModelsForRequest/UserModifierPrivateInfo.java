@@ -1,5 +1,5 @@
-package com.example.demo.models.Users.ModelsForRequest;
-import com.example.demo.models.Users.ModelsForResponse.UserPrivateInfo;
+package com.example.demo.models.Users_folder.ModelsForRequest;
+import com.example.demo.models.Users_folder.ModelsForResponse.UserPrivateInfo;
 
 public class UserModifierPrivateInfo extends UserPrivateInfo{
     private int id;

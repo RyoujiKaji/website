@@ -1,4 +1,4 @@
-package com.example.demo.models.News;
+package com.example.demo.models.News_folder;
 
 import java.sql.Blob;
 

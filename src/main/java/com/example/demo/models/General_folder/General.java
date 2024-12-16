@@ -1,4 +1,4 @@
-package com.example.demo.models.General;
+package com.example.demo.models.General_folder;
 
 import javax.persistence.*;
 
