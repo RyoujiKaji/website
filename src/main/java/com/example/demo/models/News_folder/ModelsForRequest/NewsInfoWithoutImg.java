@@ -1,38 +1,26 @@
-package com.example.demo.models.News_folder;
+package com.example.demo.models.News_folder.ModelsForRequest;
 
 import java.sql.Blob;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 
-import org.hibernate.annotations.Type;
+public class NewsInfoWithoutImg {
 
-@Entity
-@Table(name = "news")
-public class News {
-    @Id
-    @Column(name = "id")
-   // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
 
-    @Column(name = "author")
     private String author;
 
-    @Column(name = "date")
     private String date;
 
-    @Column(name = "title")
     private String title;
 
-    @Column(name = "content")
     private String content;
 
-    @Column(name = "image")
-    private Blob image;
+    public NewsInfoWithoutImg(){}
 
-    public News(){}
-
-    public News(int id, String author, String date, String title, String content){
+    public NewsInfoWithoutImg(int id, String author, String date, String title, String content){
         this.author=author;
         this.date=date;
         this.id=id;
@@ -60,10 +48,6 @@ public class News {
         return content; 
     }
 
-    public Blob getImage() { 
-        return image; 
-    }
-
     public void setAuthor(String _author) {
         this.author = _author;
     }
@@ -78,9 +62,5 @@ public class News {
 
     public void setContent(String _content) {
         this.content = _content;
-    }
-
-    public void setImage(Blob _image) {
-        this.image = _image;
     }
 }

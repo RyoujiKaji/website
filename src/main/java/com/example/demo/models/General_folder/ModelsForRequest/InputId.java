@@ -1,11 +1,11 @@
-package com.example.demo.models.Users_folder.ModelsForRequest;
+package com.example.demo.models.General_folder.ModelsForRequest;
 
-public class UserId {
+public class InputId {
     private int id;
 
-    public UserId(){}
+    public InputId(){}
 
-    public UserId(int id){
+    public InputId(int id){
         this.id = id;
     }
 

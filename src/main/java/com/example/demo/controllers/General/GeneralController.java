@@ -22,11 +22,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.example.demo.models.General_folder.General;
+import com.example.demo.models.General_folder.ModelsForRequest.InputId;
 import com.example.demo.models.General_folder.ModelsForResponse.BasicResponse;
 import com.example.demo.models.General_folder.ModelsForResponse.Footer;
 import com.example.demo.models.Users_folder.User;
 import com.example.demo.models.Users_folder.ModelsForRequest.UserEnter;
-import com.example.demo.models.Users_folder.ModelsForRequest.UserId;
 import com.example.demo.models.Users_folder.ModelsForRequest.UserModifierPrivateInfo;
 import com.example.demo.models.Users_folder.ModelsForResponse.UserEnterResponse;
 import com.example.demo.models.Users_folder.ModelsForResponse.UserPrivateInfo;

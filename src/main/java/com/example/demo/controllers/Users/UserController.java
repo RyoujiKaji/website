@@ -18,10 +18,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import com.example.demo.models.General_folder.ModelsForRequest.InputId;
 import com.example.demo.models.General_folder.ModelsForResponse.BasicResponse;
 import com.example.demo.models.Users_folder.User;
 import com.example.demo.models.Users_folder.ModelsForRequest.UserEnter;
-import com.example.demo.models.Users_folder.ModelsForRequest.UserId;
 import com.example.demo.models.Users_folder.ModelsForRequest.UserModifierPrivateInfo;
 import com.example.demo.models.Users_folder.ModelsForRequest.UserRole;
 import com.example.demo.models.Users_folder.ModelsForResponse.UserEnterResponse;
@@ -204,7 +204,7 @@ public class UserController {
   }
 
   @PostMapping(path = "/privateinfo", produces = "application/json")
-  public @ResponseBody ResponseEntity<String> privateinfo(@RequestBody UserId userInput) {
+  public @ResponseBody ResponseEntity<String> privateinfo(@RequestBody InputId userInput) {
     try {
       UserPrivateInfo response = getUserInfo(userInput.getId());
       String jsonResponse = new ObjectMapper().writeValueAsString(response); // Преобразование объекта в JSON строку
@@ -218,7 +218,7 @@ public class UserController {
   }
 
   @PostMapping("/avatar")
-  public ResponseEntity<byte[]> avatar(@RequestBody UserId userInput) {
+  public ResponseEntity<byte[]> avatar(@RequestBody InputId userInput) {
     try {
       byte[] image = getAvatar(userInput.getId());
       if (image == null) {
