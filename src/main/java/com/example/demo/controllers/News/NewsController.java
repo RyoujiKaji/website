@@ -180,8 +180,9 @@ public class NewsController {
     Optional<News> newsOpt = getNewsById(newInf.getId());
     try {
       if (newsOpt.isEmpty()) {
-        createNews(newInf);
+        News createdNews = createNews(newInf);
         response.setSuccess(true);
+        response.setError(Integer.toString(createdNews.getId()));
         return response;
         //response.setError("No news with this id");
       }
@@ -194,6 +195,7 @@ public class NewsController {
       }
       createNews(news);
       response.setSuccess(true);
+      response.setError(Integer.toString(newInf.getId()));
       return response;
     } catch (Exception err) {
       System.out.println(err.getMessage());

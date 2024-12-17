@@ -18,7 +18,8 @@ public class Footer {
         return visits;
     }
 
-    public String getDate(){
+    public 
+    String getDate(){
         return date;
     }
 }
